@@ -296,12 +296,20 @@ function renderGantt() {
                     </div>
                 </div>
                 <div class="task-timeline" style="width: ${totalDays * dayWidth}px;">
-                    <div class="task-bar" 
+                    <div class="task-bar"
                          data-task-id="${task.id}"
                          style="left: ${left}px; width: ${width}px; background: ${gradient}"
                          onmousedown="startDrag(event, ${task.id})"
                          title="${task.startDate.toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit' })} ~ ${task.endDate.toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit' })}">
-                        ${task.name}
+                        <div class="date-adjust start">
+                            <button class="date-adjust-btn plus" onclick="adjustDate(event, ${task.id}, 'start', -1)" title="延伸：開始日期提前一天">+</button>
+                            <button class="date-adjust-btn minus" onclick="adjustDate(event, ${task.id}, 'start', 1)" title="縮短：開始日期延後一天">−</button>
+                        </div>
+                        <span class="task-bar-text">${task.name}</span>
+                        <div class="date-adjust end">
+                            <button class="date-adjust-btn minus" onclick="adjustDate(event, ${task.id}, 'end', -1)" title="結束日期提前一天">−</button>
+                            <button class="date-adjust-btn plus" onclick="adjustDate(event, ${task.id}, 'end', 1)" title="結束日期延後一天">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -335,6 +343,30 @@ function renderGantt() {
             }
         });
     });
+}
+
+function adjustDate(e, taskId, edge, delta) {
+    e.stopPropagation();
+    e.preventDefault();
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    if (edge === 'start') {
+        const newStart = new Date(task.startDate);
+        newStart.setDate(newStart.getDate() + delta);
+        // 不允許開始日期超過結束日期
+        if (newStart <= task.endDate) {
+            task.startDate = newStart;
+        }
+    } else {
+        const newEnd = new Date(task.endDate);
+        newEnd.setDate(newEnd.getDate() + delta);
+        // 不允許結束日期早於開始日期
+        if (newEnd >= task.startDate) {
+            task.endDate = newEnd;
+        }
+    }
+    renderGantt();
 }
 
 function startDrag(e, taskId) {

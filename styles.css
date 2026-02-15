@@ -360,14 +360,80 @@ body {
     transition: transform 0.1s;
     user-select: none;
     padding: 0 8px;
+    overflow: visible;
+    white-space: nowrap;
+}
+
+.task-bar-text {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    flex: 1;
+    min-width: 0;
 }
 
 .task-bar:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.task-bar .date-adjust {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.task-bar:hover .date-adjust {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.task-bar .date-adjust.start {
+    left: 0;
+    transform: translateX(-100%);
+    padding-right: 3px;
+}
+
+.task-bar .date-adjust.end {
+    right: 0;
+    transform: translateX(100%);
+    padding-left: 3px;
+}
+
+.date-adjust-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    line-height: 1;
+    padding: 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    transition: transform 0.15s;
+}
+
+.date-adjust-btn:hover {
+    transform: scale(1.2);
+}
+
+.date-adjust-btn.minus {
+    background: #ff5252;
+}
+
+.date-adjust-btn.plus {
+    background: #4CAF50;
 }
 
 .task-bar.dragging {
