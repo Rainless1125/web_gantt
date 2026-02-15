@@ -73,7 +73,9 @@
                         <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
                     </label>
                     <button class="btn-export" onclick="exportImage()">📸 匯出圖片</button>
+                    <button class="btn-cancel" onclick="clearAllData()" style="margin-top: 0;">🗑️ 清除所有資料</button>
                 </div>
+                <p style="margin-top: 10px; font-size: 0.85em; color: #666;">💡 提示：您的任務會自動暫時保存在瀏覽器中，重新整理頁面不會立即遺失資料，但還是建議製作完成後匯出JSON備份</p>
             </div>
         </div>
 

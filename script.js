@@ -5,6 +5,44 @@ let dragStartLeft = 0;
 let selectedColor = '#667eea,#764ba2'; // 預設顏色
 let editingTaskId = null; // 正在編輯的任務ID
 
+// 從 LocalStorage 載入任務資料
+function loadTasksFromStorage() {
+    try {
+        const storedTasks = localStorage.getItem('ganttTasks');
+        if (storedTasks) {
+            const parsedTasks = JSON.parse(storedTasks);
+            tasks = parsedTasks.map(task => ({
+                ...task,
+                startDate: new Date(task.startDate),
+                endDate: new Date(task.endDate)
+            }));
+            console.log(`已從瀏覽器載入 ${tasks.length} 個任務`);
+        }
+    } catch (error) {
+        console.error('載入任務資料失敗:', error);
+    }
+}
+
+// 將任務資料保存到 LocalStorage
+function saveTasksToStorage() {
+    try {
+        const tasksToStore = tasks.map(task => ({
+            id: task.id,
+            name: task.name,
+            startDate: task.startDate.toISOString(),
+            endDate: task.endDate.toISOString(),
+            color: task.color
+        }));
+        localStorage.setItem('ganttTasks', JSON.stringify(tasksToStore));
+        console.log(`已保存 ${tasks.length} 個任務到瀏覽器`);
+    } catch (error) {
+        console.error('保存任務資料失敗:', error);
+    }
+}
+
+// 初始化：載入資料
+loadTasksFromStorage();
+
 // 初始化今天的日期
 document.getElementById('startDate').valueAsDate = new Date();
 
@@ -86,6 +124,7 @@ function addTask() {
     // 清空輸入
     clearForm();
     renderGantt();
+    saveTasksToStorage(); // 保存到瀏覽器
 }
 
 function clearForm() {
@@ -124,6 +163,7 @@ function deleteTask(id) {
     if (confirm('確定要刪除此任務嗎?')) {
         tasks = tasks.filter(t => t.id !== id);
         renderGantt();
+        saveTasksToStorage(); // 保存到瀏覽器
     }
 }
 
@@ -367,6 +407,7 @@ function adjustDate(e, taskId, edge, delta) {
         }
     }
     renderGantt();
+    saveTasksToStorage(); // 保存到瀏覽器
 }
 
 function startDrag(e, taskId) {
@@ -410,6 +451,7 @@ function stopDrag(e) {
     if (draggedTask) {
         const bar = document.querySelector(`[data-task-id="${draggedTask.id}"]`);
         if (bar) bar.classList.remove('dragging');
+        saveTasksToStorage(); // 拖曳完成後保存
     }
     
     draggedTask = null;
@@ -550,6 +592,7 @@ function importData(event) {
             }));
 
             renderGantt();
+            saveTasksToStorage(); // 保存匯入的資料
             alert(`成功匯入 ${tasks.length} 個任務`);
             
         } catch (error) {
@@ -562,6 +605,21 @@ function importData(event) {
     };
     
     reader.readAsText(file);
+}
+
+// 清除所有資料
+function clearAllData() {
+    if (tasks.length === 0) {
+        alert('目前沒有任何任務資料');
+        return;
+    }
+    
+    if (confirm(`確定要清除所有 ${tasks.length} 個任務嗎？此操作無法復原！\n\n建議先匯出JSON備份後再清除。`)) {
+        tasks = [];
+        localStorage.removeItem('ganttTasks');
+        renderGantt();
+        alert('已清除所有任務資料');
+    }
 }
 
 // 初始渲染
