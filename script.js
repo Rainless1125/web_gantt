@@ -230,6 +230,7 @@ function renderGantt() {
                 <p>請在上方新增第一個任務</p>
             </div>
         `;
+        document.getElementById('summaryCard').innerHTML = '';
         return;
     }
 
@@ -383,6 +384,58 @@ function renderGantt() {
             }
         });
     });
+
+    renderSummary();
+}
+
+function renderSummary() {
+    const summaryCard = document.getElementById('summaryCard');
+
+    if (tasks.length === 0) {
+        summaryCard.innerHTML = '';
+        return;
+    }
+
+    const earliestStart = new Date(Math.min(...tasks.map(t => t.startDate)));
+    const latestEnd = new Date(Math.max(...tasks.map(t => t.endDate)));
+    const totalSpanDays = getDaysBetween(earliestStart, latestEnd) + 1;
+
+    const totalTaskDays = tasks.reduce((sum, task) => {
+        return sum + getDaysBetween(task.startDate, task.endDate) + 1;
+    }, 0);
+
+    const formatDate = (date) => date.toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const formatWeekday = (date) => date.toLocaleDateString('zh-TW', { weekday: 'short' });
+
+    summaryCard.innerHTML = `
+        <div class="summary-card">
+            <h3>📋 專案摘要</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="label">任務總數</div>
+                    <div class="value highlight">${tasks.length} 個</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">專案開始日</div>
+                    <div class="value">${formatDate(earliestStart)}</div>
+                    <div class="label" style="margin-top: 4px;">${formatWeekday(earliestStart)}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">專案結束日</div>
+                    <div class="value">${formatDate(latestEnd)}</div>
+                    <div class="label" style="margin-top: 4px;">${formatWeekday(latestEnd)}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">專案跨越天數</div>
+                    <div class="value highlight">${totalSpanDays} 天</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">任務累計工天</div>
+                    <div class="value highlight">${totalTaskDays} 天</div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function adjustDate(e, taskId, edge, delta) {
