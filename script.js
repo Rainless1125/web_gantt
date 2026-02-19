@@ -220,6 +220,22 @@ function getWeekNumber(date) {
     return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 }
 
+function isToday(date) {
+    const today = new Date();
+    return date.getFullYear() === today.getFullYear() &&
+           date.getMonth() === today.getMonth() &&
+           date.getDate() === today.getDate();
+}
+
+function getTodayOffset(rangeStart, dayWidth) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(rangeStart);
+    start.setHours(0, 0, 0, 0);
+    const days = getDaysBetween(start, today);
+    return days >= 0 ? days * dayWidth + dayWidth / 2 : -1;
+}
+
 function renderGantt() {
     const chart = document.getElementById('ganttChart');
     
@@ -313,7 +329,8 @@ function renderGantt() {
     const daysHTML = dates.map(date => {
         const day = date.getDate();
         const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-        return `<div class="day-cell ${isWeekend ? 'weekend' : ''}" style="width: ${dayWidth}px">${day}</div>`;
+        const todayClass = isToday(date) ? 'today' : '';
+        return `<div class="day-cell ${isWeekend ? 'weekend' : ''} ${todayClass}" style="width: ${dayWidth}px">${day}</div>`;
     }).join('');
 
     // 生成任務列
@@ -337,6 +354,7 @@ function renderGantt() {
                     </div>
                 </div>
                 <div class="task-timeline" style="width: ${totalDays * dayWidth}px;">
+                    ${(() => { const off = getTodayOffset(rangeStart, dayWidth); return (off >= 0 && off <= totalDays * dayWidth) ? `<div class="today-line" style="left: ${off}px;"></div>` : ''; })()}
                     <div class="task-bar"
                          data-task-id="${task.id}"
                          style="left: ${left}px; width: ${width}px; background: ${gradient}"
@@ -357,6 +375,12 @@ function renderGantt() {
         `;
     }).join('');
 
+    // 計算今天的偏移位置
+    const todayOffset = getTodayOffset(rangeStart, dayWidth);
+    const todayLineHTML = (todayOffset >= 0 && todayOffset <= totalDays * dayWidth)
+        ? `<div class="today-line" style="left: ${todayOffset}px;"></div>`
+        : '';
+
     chart.innerHTML = `
         <div class="timeline-header">
             <div class="task-label-header">任務名稱</div>
@@ -365,6 +389,7 @@ function renderGantt() {
                 <div class="month-row">${monthsHTML}</div>
                 <div class="week-row">${weeksHTML}</div>
                 <div class="day-row">${daysHTML}</div>
+                ${todayLineHTML}
             </div>
         </div>
         ${tasksHTML}

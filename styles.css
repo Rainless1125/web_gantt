@@ -232,6 +232,7 @@ body {
     display: flex;
     flex-direction: column;
     min-width: 0;
+    position: relative;
 }
 
 .year-row, .month-row, .week-row, .day-row {
@@ -271,6 +272,22 @@ body {
 
 .day-cell.weekend {
     background: #fff3e0;
+}
+
+.day-cell.today {
+    background: #ffebee;
+    color: #d32f2f;
+    font-weight: 700;
+}
+
+.today-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    border-left: 2px dashed rgba(211, 47, 47, 0.5);
+    z-index: 10;
+    pointer-events: none;
 }
 
 .gantt-row {
