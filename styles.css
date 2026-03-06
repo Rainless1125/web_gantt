@@ -313,11 +313,27 @@ body {
     overflow: hidden;
 }
 
-.task-label > span {
+.task-label-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1;
+}
+
+.task-label-name {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex: 1;
+}
+
+.task-label-owner {
+    font-size: 0.8em;
+    color: #999;
+    font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 2px;
 }
 
 .task-actions {

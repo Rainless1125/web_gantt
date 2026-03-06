@@ -29,6 +29,7 @@ function saveTasksToStorage() {
         const tasksToStore = tasks.map(task => ({
             id: task.id,
             name: task.name,
+            owner: task.owner || '',
             startDate: task.startDate.toISOString(),
             endDate: task.endDate.toISOString(),
             color: task.color
@@ -86,6 +87,7 @@ document.getElementById('startDate').addEventListener('change', function() {
 
 function addTask() {
     const name = document.getElementById('taskName').value.trim();
+    const owner = document.getElementById('taskOwner').value.trim();
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
 
@@ -104,6 +106,7 @@ function addTask() {
         const task = tasks.find(t => t.id === editingTaskId);
         if (task) {
             task.name = name;
+            task.owner = owner;
             task.startDate = new Date(startDate);
             task.endDate = new Date(endDate);
             task.color = selectedColor;
@@ -115,6 +118,7 @@ function addTask() {
         tasks.push({
             id: Date.now(),
             name,
+            owner,
             startDate: new Date(startDate),
             endDate: new Date(endDate),
             color: selectedColor
@@ -129,6 +133,7 @@ function addTask() {
 
 function clearForm() {
     document.getElementById('taskName').value = '';
+    document.getElementById('taskOwner').value = '';
     document.getElementById('startDate').valueAsDate = new Date();
     document.getElementById('endDate').value = '';
     document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
@@ -176,6 +181,7 @@ function editTask(id) {
 
     // 填入編輯資料
     document.getElementById('taskName').value = task.name;
+    document.getElementById('taskOwner').value = task.owner || '';
     document.getElementById('startDate').valueAsDate = task.startDate;
     document.getElementById('endDate').valueAsDate = task.endDate;
 
@@ -347,7 +353,10 @@ function renderGantt() {
         return `
             <div class="gantt-row">
                 <div class="task-label">
-                    <span>${task.name}</span>
+                    <div class="task-label-info">
+                        <span class="task-label-name">${task.name}</span>
+                        ${task.owner ? `<span class="task-label-owner">👤 ${task.owner}</span>` : ''}
+                    </div>
                     <div class="task-actions">
                         <button class="edit-btn" data-task-id="${task.id}" data-action="edit">✎</button>
                         <button class="delete-btn" data-task-id="${task.id}" data-action="delete">✕</button>
@@ -558,6 +567,7 @@ function exportData() {
         tasks: tasks.map(task => ({
             id: task.id,
             name: task.name,
+            owner: task.owner || '',
             startDate: task.startDate.toISOString(),
             endDate: task.endDate.toISOString(),
             color: task.color
@@ -664,6 +674,7 @@ function importData(event) {
             tasks = importData.tasks.map(task => ({
                 id: task.id,
                 name: task.name,
+                owner: task.owner || '',
                 startDate: new Date(task.startDate),
                 endDate: new Date(task.endDate),
                 color: task.color
