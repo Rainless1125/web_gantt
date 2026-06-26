@@ -154,11 +154,11 @@ function updateButtonState() {
     const cancelBtn = document.querySelector('.btn-cancel');
     
     if (editingTaskId !== null) {
-        btn.textContent = '✓ 確認更新';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> 確認更新';
         btn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
         cancelBtn.style.display = 'block';
     } else {
-        btn.textContent = '➕ 新增任務';
+        btn.innerHTML = '<i class="fa-solid fa-plus"></i> 新增任務';
         btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
         cancelBtn.style.display = 'none';
     }
@@ -443,7 +443,7 @@ function renderSummary() {
 
     summaryCard.innerHTML = `
         <div class="summary-card">
-            <h3>📋 專案摘要</h3>
+            <h3><i class="fa-solid fa-list-check"></i> 專案摘要</h3>
             <div class="summary-grid">
                 <div class="summary-item">
                     <div class="label">任務總數</div>

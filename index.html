@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>甘特圖規劃工具</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -63,23 +64,23 @@
                 </div>
 
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="btn-primary" onclick="addTask()">➕ 新增任務</button>
-                    <button class="btn-cancel" onclick="clearForm()" style="display: none;">✕ 取消編輯</button>
+                    <button class="btn-primary" onclick="addTask()"><i class="fa-solid fa-plus"></i> 新增任務</button>
+                    <button class="btn-cancel" onclick="clearForm()" style="display: none;"><i class="fa-solid fa-xmark"></i> 取消編輯</button>
                 </div>
             </div>
 
             <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
                 <label style="font-weight: 600; margin-bottom: 10px; display: block; color: #333;">資料管理</label>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="btn-export" onclick="exportData()">💾 匯出JSON</button>
+                    <button class="btn-export" onclick="exportData()"><i class="fa-solid fa-download"></i> 匯出JSON</button>
                     <label class="btn-import">
-                        📂 匯入JSON
+                        <i class="fa-solid fa-file-import"></i> 匯入JSON
                         <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
                     </label>
-                    <button class="btn-export" onclick="exportImage()">📸 匯出圖片</button>
-                    <button class="btn-cancel" onclick="clearAllData()" style="margin-top: 0;">🗑️ 清除所有資料</button>
+                    <button class="btn-export" onclick="exportImage()"><i class="fa-solid fa-image"></i> 匯出圖片</button>
+                    <button class="btn-cancel" onclick="clearAllData()" style="margin-top: 0;"><i class="fa-solid fa-trash-can"></i> 清除所有資料</button>
                 </div>
-                <p style="margin-top: 10px; font-size: 0.85em; color: #666;">💡 提示：您的任務會自動暫時保存在瀏覽器中，重新整理頁面不會立即遺失資料，但還是建議製作完成後匯出JSON備份</p>
+                <p style="margin-top: 10px; font-size: 0.85em; color: #666;"><i class="fa-solid fa-lightbulb"></i> 提示：您的任務會自動暫時保存在瀏覽器中，重新整理頁面不會立即遺失資料，但還是建議製作完成後匯出JSON備份</p>
             </div>
         </div>
 
