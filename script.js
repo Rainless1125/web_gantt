@@ -48,13 +48,58 @@ loadTasksFromStorage();
 document.getElementById('startDate').valueAsDate = new Date();
 
 // 顏色選擇
+const customColorBtn = document.querySelector('.custom-color-btn');
+const customColorPanel = document.getElementById('customColorPanel');
+const customColor1Input = document.getElementById('customColor1');
+const customColor2Input = document.getElementById('customColor2');
+const applyCustomColorBtn = document.getElementById('applyCustomColorBtn');
+
+function applyCustomColorSelection() {
+    const color1 = customColor1Input.value;
+    const color2 = customColor2Input.value;
+    selectedColor = `${color1},${color2}`;
+
+    if (customColorBtn && customColorBtn.classList.contains('active')) {
+        customColorBtn.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+    }
+}
+
 document.querySelectorAll('.color-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        selectedColor = this.dataset.color;
+
+        if (this.classList.contains('custom-color-btn')) {
+            customColorPanel.style.display = 'flex';
+            applyCustomColorSelection();
+        } else {
+            customColorPanel.style.display = 'none';
+            selectedColor = this.dataset.color;
+        }
     });
 });
+
+if (customColor1Input) {
+    customColor1Input.addEventListener('input', () => {
+        if (customColorBtn && customColorBtn.classList.contains('active')) {
+            applyCustomColorSelection();
+        }
+    });
+}
+
+if (customColor2Input) {
+    customColor2Input.addEventListener('input', () => {
+        if (customColorBtn && customColorBtn.classList.contains('active')) {
+            applyCustomColorSelection();
+        }
+    });
+}
+
+if (applyCustomColorBtn) {
+    applyCustomColorBtn.addEventListener('click', () => {
+        applyCustomColorSelection();
+    });
+}
 
 // 快速選擇時長
 document.querySelectorAll('.duration-btn').forEach(btn => {
@@ -143,6 +188,9 @@ function clearForm() {
         btn.classList.remove('active');
     });
     document.querySelector('.color-btn').classList.add('active');
+    if (customColorPanel) {
+        customColorPanel.style.display = 'none';
+    }
     selectedColor = '#667eea,#764ba2';
     
     editingTaskId = null;
@@ -186,13 +234,26 @@ function editTask(id) {
     document.getElementById('endDate').valueAsDate = task.endDate;
 
     // 選中對應的顏色
+    const colorValues = (task.color || '').split(',');
+    let matchedPreset = false;
+
     document.querySelectorAll('.color-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.dataset.color === task.color) {
             btn.classList.add('active');
+            matchedPreset = true;
         }
     });
-    selectedColor = task.color;
+
+    if (!matchedPreset && colorValues.length === 2) {
+        customColor1Input.value = colorValues[0];
+        customColor2Input.value = colorValues[1];
+        customColorBtn.classList.add('active');
+        customColorPanel.style.display = 'flex';
+        selectedColor = task.color;
+    } else {
+        selectedColor = task.color;
+    }
 
     // 更新按鈕狀態
     updateButtonState();
